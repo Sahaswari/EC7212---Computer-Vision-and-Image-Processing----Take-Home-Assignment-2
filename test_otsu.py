@@ -7,12 +7,18 @@ from skimage import data, filters, util
 from skimage.filters import gaussian
 from scipy.ndimage import median_filter
 from skimage import exposure
+from skimage import io, color
 
 #upload a image
 root = tk.Tk()
 root.withdraw()
 file_path = filedialog.askopenfilename(title="Select an image file", filetypes=[("Image files", "*.png;*.jpg;*.jpeg;*.bmp")])
-image = io.imread(file_path, as_gray=True)
+org_image = io.imread(file_path)
+
+if org_image.ndim == 2:
+    image = org_image
+else:
+    image = color.rgb2gray(org_image)
 
 #create image (two-objects + background)
 # image = np.zeros((100,100), dtype=np.uint8)
@@ -34,7 +40,7 @@ binary_image = noisy_image > thereshould
 
 #Display results
 plt.figure(figsize=(10,3))
-plt.subplot(1,4,1); plt.title('Original Image'); plt.imshow(image)
+plt.subplot(1,4,1); plt.title('Original Image'); plt.imshow(org_image)
 plt.subplot(1,4,2);plt.title('Noisy Image'); plt.imshow(noisy_image, cmap='gray')
 plt.subplot(1,4,3);plt.title('Otsu Thresholding'); plt.imshow(binary_image, cmap='gray')
 plt.subplot(1,4,4);plt.title('Resulting Image');plt.imshow(binary_image, cmap='gray')
